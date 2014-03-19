@@ -3,7 +3,7 @@ import os
 import sys
 
 if __name__ == "__main__":
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "python_social_auth.settings")
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "portal_do_egresso.settings")
 
     from django.core.management import execute_from_command_line
 

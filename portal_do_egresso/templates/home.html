@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="col-md-6">
+    <form method="post" action="" class="form-horizontal">
+    {% if egressoForm %}
+    <legend>Cadastre-se</legend>
+    <fieldset>
+        <div class="form-group">
+            <label class="col-lg-4 control-label">Nome de Usuario</label>
+            <div class="col-lg-8">
+                    {{egressoForm.username}}
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-lg-4 control-label">Nome</label>
+            <div class="col-lg-8">
+                    {{egressoForm.first_name}}
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-lg-4 control-label">Sobrenome</label>
+            <div class="col-lg-8">
+                    {{egressoForm.last_name}}
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-lg-4 control-label">Email</label>
+            <div class="col-lg-8">
+                    {{egressoForm.email}}
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-lg-4 control-label">Telefone</label>
+            <div class="col-lg-8">
+                    {{egressoForm.telefone}}
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-lg-4 control-label">Link do Curriculo Lattes</label>
+            <div class="col-lg-8">
+                    {{egressoForm.lattes}}
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-lg-4 control-label">é Consultor?</label>
+            <div class="col-lg-8">
+                    {{egressoForm.consultor}}
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-lg-4 control-label">é Empreendedor?</label>
+            <div class="col-lg-8">
+                    {{egressoForm.empreendedor}}
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-lg-4 control-label">Senha:</label>
+            <div class="col-lg-8">
+                    {{egressoForm.senha1}}
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-lg-4 control-label">Repita a senha:</label>
+            <div class="col-lg-8">
+                    {{egressoForm.senha2}}
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-lg-10 col-lg-offset-2">
+                <input type="submit" value="Cadastrar" class="btn btn-primary">
+                <input type="reset" value="Limpar" class="btn">
+            </div>
+        </div>
+    </fieldset>
+    {% endif %}
+</form>
+</div>
+<div class="col-md-6">
+    {%load staticfiles%}
+    <legend>Ou use uma Rede Social :)</legend>
+    <a href="{% url 'social:begin' 'facebook' %}"><img src="{%static "img/facebook_button.png" %}" style="width:60%; height:60%"></a><br />
+</div>
+{% endblock content %}
