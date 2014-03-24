@@ -7,7 +7,6 @@ admin.autodiscover()
 urlpatterns = patterns('',
     url(r'^$', 'portal_do_egresso.ifpb.views.home'),
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^register/', 'portal_do_egresso.ifpb.views.register'),
     url(r'^signup-email/', 'portal_do_egresso.ifpb.views.signup_email'),
     url(r'^email-sent/', 'portal_do_egresso.ifpb.views.validation_sent'),
     url(r'^login/$', 'portal_do_egresso.ifpb.views.home'),

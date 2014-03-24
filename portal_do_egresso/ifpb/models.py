@@ -1,76 +1,187 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-#MODIFICA A ESTRUTURA ORIGINAL DO DJANGO
-"""
-Para usarmos a funcionalidade de autenticacao do Django
-precisamos adicionar atributos a Classe User do Django
-Onde essa classe sera o nosso EGRESSO
-"""
-User.add_to_class('telefone', models.CharField(max_length=50, blank=True))
-User.add_to_class('lattes', models.URLField(max_length=300, blank=True))
-User.add_to_class('areaDeAtuacao', models.CharField(max_length=100, blank=True))
-User.add_to_class('empreendedor', models.BooleanField())
-User.add_to_class('consultor', models.BooleanField())
-User.add_to_class('picture', models.ImageField(upload_to='profile_pictures'))
-
-#UTILIZA COMPOSICAO
-"""
-Podemos tambem criar um relacionamento entro o User do Django e o Egresso
-para que possamos usar o sistema de autenticacao do Django
-"""
-
 """
 Choices
 """
-NIVEL_CHOICE = (
-    ('superior', 'Superior'),
-    ('tecnico', 'Tecnico'),
-    ('medio', 'Medio')
-)
-
 SEXO_CHOICE = (
     ('M', 'Masculino'),
     ('F', 'Feminino')
 )
 
 CLASSIFICACAO_CHOICE = (
-    ('microempresa', 'Micro Empresa'),
-    ('pequenoporte', 'Pequeno Porte'),
+    ('micro', 'Micro Empresa'),
+    ('pequena', 'Pequeno Porte'),
     ('media', 'Media Empresa'),
     ('artesao', 'Artesao'),
     ('rural', 'Pordutor Rural'),
-    ('individual', 'Empreendedor Rural')
+    ('individual', 'Empreendedor Individual')
 )
 """
 Modelos que se relacionarao com o usuario do sistema
 """
-#class Egresso(models.Model):
-#    user = models.ForeignKey(User, unique=True)
-#    telefone = models.CharField(max_length=100, blank=True)
-#    lattes = models.URLField(max_length=200, blank=True)
-#    AreaDeAtuacao = models.CharField(max_length=100)
-#    empreendedor = models.BooleanField()
-#    consultor = models.BooleanField()
-
-class Curso(models.Model):
-    nome = models.CharField(max_length=100)
-    nivel = models.CharField(max_length=100, choices=NIVEL_CHOICE)
-    egressos = models.ManyToManyField(User, through='EgressoCurso')
+class Aluno(models.Model):
+    user =              models.ForeignKey(User, unique=True)
+    abreviacao =        models.CharField(max_length=20, blank=True)
+    lattes =            models.URLField(max_length=100, blank=True)
+    rua_av =            models.CharField(max_length=120, blank=True)
+    bairro =            models.CharField(max_length=40, blank=True)
+    cep =               models.CharField(max_length=10, blank=True)
+    cidade =            models.CharField(max_length=80, blank=True)
+    estado =            models.CharField(max_length=2, blank=True)
+    sexo =              models.CharField(max_length=2, blank=True, choices=SEXO_CHOICE)
+    foto =              models.ImageField(upload_to="fotos", blank=True)
 
     def __unicode__(self):
-        return u"%s" % (self.nome)
+        return '%s %s' % (self.user.first_name, self.user.last_name)
 
-class EgressoCurso(models.Model):
-    dataConclusao = models.DateField()
-    egresso = models.ForeignKey(User)
-    curso = models.ForeignKey(Curso)
+class Telefone(models.Model):
+    aluno =             models.ForeignKey(Aluno)
+    ddd =               models.CharField(max_length=2, blank=False)
+    numero =            models.CharField(max_length=9, blank=False)
+
+    def __unicode__(self):
+        return '(%s) %s' %(self.ddd, self.numero)
+
+class Autonomo(models.Model):
+    aluno =             models.ForeignKey(Aluno)
+    titulo =            models.CharField(max_length=30, blank=False)
+    descricao =         models.CharField(max_length=300, blank=True)
+
+    def __unicode__(self):
+        return '%s' %(self.titulo)
+
+class Area(models.Model):
+    descricao =         models.CharField(max_length=80, blank=False)
+    abreviacao =        models.CharField(max_length=20, blank=True)
+
+    def __unicode__(self):
+        return '%s' %(self.descricao)
+
+class FuturoEmpreendedor(models.Model):
+    aluno =             models.ForeignKey(Aluno)
+    area =              models.ForeignKey(Area)
+
+    def __unicode__(self):
+        return '%s' %(self.aluno)
+
+class Consultor(models.Model):
+    aluno =             models.ForeignKey(Aluno)
+    area =              models.ForeignKey(Area)
+    descricao =         models.CharField(max_length=200, blank=False)
+
+    def __unicode__(self):
+        return '%s' % (self.descricao)
+
+class Instituicao(models.Model):
+    descricao =         models.CharField(max_length=80, blank=False)
+    abreviacao =        models.CharField(max_length=20)
+    inicio =            models.DateTimeField()
+    fim =               models.DateTimeField()
+    validado =          models.BooleanField(default=False)
+
+    def __unicode__(self):
+        return '%s' %(self.descricao)
+
+class Nivel(models.Model):
+    descricao =         models.CharField(max_length=20)
+
+    def __unicode__(self):
+        return '%s' %(self.descricao)
+
+class Modalidade(models.Model):
+    nivel =             models.ForeignKey(Nivel)
+    descricao =         models.CharField(max_length=80, blank=False)
+    abreviacao =        models.CharField(max_length=80, blank=True)
+
+    def __unicode__(self):
+        return '%s' %(self.descricao)
+
+class Curso(models.Model):
+    instituicao =       models.ForeignKey(Instituicao)
+    modalidade =        models.ForeignKey(Modalidade)
+    area =              models.ForeignKey(Area)
+    descricao =         models.CharField(max_length=80, blank=False)
+    abreviacao =        models.CharField(max_length=80, blank=True)
+    validado =          models.BooleanField(default=False)
+
+    def __unicode__(self):
+        return '%s' %(self.descricao)
+
+class Matricula(models.Model):
+    aluno =             models.ForeignKey(Aluno)
+    curso =             models.ForeignKey(Curso)
+    matricula =         models.CharField(max_length=20, blank=False, unique=True)
+    ano_inicio =        models.IntegerField(max_length=4)
+    ano_fim =           models.IntegerField(max_length=4)
+    semestre_inicio =   models.IntegerField(max_length=4)
+    semestre_fim =      models.IntegerField(max_length=4)
+    diploma =           models.BooleanField(default=False)
+
+    def __unicode__(self):
+        return '%s' %(self.matricula)
+
+class Tcc(models.Model):
+    matricula =         models.ForeignKey(Matricula)
+    titulo =            models.CharField(max_length=20, blank=False)
+
+    def __unicode__(self):
+        return '%s' %(self.titulo)
+
+class EstagioSupervisionado(models.Model):
+    matricula =         models.ForeignKey(Matricula)
+    lugar =             models.CharField(max_length=80, blank=False)
+    funcao =            models.CharField(max_length=80, blank=False)
+
+    def __unicode__(self):
+        return '%s' %(self.funcao)
+
+class Classificacao(models.Model):
+    descricao =         models.CharField(max_length=80, blank=False, choices=CLASSIFICACAO_CHOICE)
+
+    def __unicode__(self):
+        return '%s' %(self.descricao)
 
 class Empresa(models.Model):
-    nome = models.CharField(max_length=200, blank=False)
-    areaDeAtuacao = models.CharField(max_length=200, blank=False)
-    dataCriacao = models.DateField()
-    classificacao = models.CharField(max_length=100, choices=CLASSIFICACAO_CHOICE)
-    site = models.URLField(max_length=200, blank=True)
-    telefone = models.CharField(max_length=50, blank=True)
-    dono = models.ForeignKey(User)
+    classificacao =     models.ForeignKey(Classificacao)
+    nome =              models.CharField(max_length=80, blank=True)
+    descricao =         models.CharField(max_length=80, blank=False)
+    abrevicao =         models.CharField(max_length=80, blank=True)
+    cnpj =              models.BigIntegerField()
+    site =              models.URLField(max_length=200)
+    email =             models.EmailField()
+    rua_av =            models.CharField(max_length=120)
+    bairro =            models.CharField(max_length=40)
+    cep =               models.CharField(max_length=10)
+    cidade =            models.CharField(max_length=80)
+    estado =            models.CharField(max_length=2)
+    telefone =          models.CharField(max_length=14)
+
+    def __unicode__(self):
+        return '%s' %(self.nome)
+
+class Vinculo(models.Model):
+    empresa =           models.ForeignKey(Empresa)
+    aluno =             models.ForeignKey(Aluno)
+    funcao =            models.CharField(max_length=80, blank=False)
+    inicio =            models.DateTimeField()
+    fim =               models.DateTimeField()
+    proprietario =      models.BooleanField(default=False)
+
+    def __unicode__(self):
+        return '%s' %(self.funcao)
+
+class Tipo(models.Model):
+    descricao =         models.CharField(max_length=80, blank=False)
+
+    def __unicode__(self):
+        return '%s' %(self.descricao)
+
+class Oferta(models.Model):
+    empresa =           models.ForeignKey(Empresa)
+    tipo =              models.ForeignKey(Tipo)
+    titulo =            models.CharField(max_length=80, blank=False)
+    descricao =         models.CharField(max_length=80, blank=False)
+
+    def __unicode__(self):
+        return '%s' %(self.titulo)

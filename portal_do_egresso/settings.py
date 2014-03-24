@@ -17,7 +17,7 @@ ADMINS = (
 Para usar outra classe na autenticacao do Django
 precisamos criar essa variavel
 """
-#AUTH_PROFILE_MODULE = 'portal_do_egresso.ifpb.Egresso'
+AUTH_PROFILE_MODULE = 'portal_do_egresso.ifpb.Aluno'
 
 MANAGERS = ADMINS
 
@@ -277,4 +277,18 @@ SOCIAL_AUTH_PIPELINE = (
 #FACEBOOK
 SOCIAL_AUTH_FACEBOOK_KEY = '224453197743235'
 SOCIAL_AUTH_FACEBOOK_SECRET = 'b8bf843e9784e1ae6aebfc0f4b2293d0'
-SOCIAL_AUTH_FACEBOOK_SCOPE = ['email', 'user_education_history']
+#Permissoes solicitadas ao usuario no primeiro login
+SOCIAL_AUTH_FACEBOOK_SCOPE = ['email', 'user_education_history', 'publish_actions', 'user_about_me', 'user_birthday', 'user_work_history', 'friends_about_me', 'friends_education_history']
+
+
+
+
+
+
+
+
+
+
+
+
+

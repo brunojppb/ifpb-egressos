@@ -7,8 +7,7 @@ from social.pipeline.partial import partial
 
 @partial
 def require_email(strategy, details, response, user=None, is_new=False, *args, **kwargs):
-    #dumpclean(kwargs)
-    print response
+    dumpclean(response)
     if user and user.email:
         return
     elif is_new and not details.get('email'):
