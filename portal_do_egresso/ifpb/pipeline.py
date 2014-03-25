@@ -1,4 +1,5 @@
 from urllib2 import urlopen
+from django.contrib.auth.models import User
 from django.utils.text import slugify
 from django.shortcuts import redirect
 from django.core.files.base import ContentFile
@@ -7,7 +8,7 @@ from social.pipeline.partial import partial
 
 @partial
 def require_email(strategy, details, response, user=None, is_new=False, *args, **kwargs):
-    dumpclean(response)
+    #dumpclean(response)
     if user and user.email:
         return
     elif is_new and not details.get('email'):
@@ -16,11 +17,21 @@ def require_email(strategy, details, response, user=None, is_new=False, *args, *
         else:
             return redirect('require_email')
 
-#@partial
-#def register(strategy, details, user=None, is_new=False, *args, **kwargs):
-#    if is_new:
+@partial
+def associate_by_mail(strategy, details, user=None, is_new=False, *args, **kwargs):
+    try:
+        print details
+        email = details['email']
+        kwargs['user'] = User.objects.get(email=email)
+    except:
+        pass
+    return kwargs
+
 
 def save_facebook_profile_picture(strategy, details, response, user=None, is_new=False, *args, **kwargs):
+    """
+    Salva a imagem do perfil do facebook
+    """
     if is_new and strategy.backend.name == 'facebook':
         url = "http://graph.facebook.com/%s/picture?type=large" % response['id']
         picture = urlopen(url)

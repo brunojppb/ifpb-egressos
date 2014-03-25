@@ -27,7 +27,7 @@ DATABASES = {
         'NAME': 'portaldoegresso', # Or path to database file if using sqlite3.
         # The following settings are not used with sqlite3:
         'USER': 'root',
-        'PASSWORD': 'root',
+        'PASSWORD': 'DlnCtDko',
         'HOST': '127.0.0.1', # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
         'PORT': '', # Set to empty string for default.
     }
@@ -265,6 +265,10 @@ SOCIAL_AUTH_PIPELINE = (
     'social.pipeline.social_auth.social_uid',
     'social.pipeline.social_auth.auth_allowed',
     'social.pipeline.social_auth.social_user',
+    #checa se o usuario ja possui cadastro no sistema
+    # e associa o perfil do facebook ao usuario ja cadastrado
+    'portal_do_egresso.ifpb.pipeline.associate_by_mail',
+
     'social.pipeline.user.get_username',
     'portal_do_egresso.ifpb.pipeline.require_email',
     'social.pipeline.mail.mail_validation',
