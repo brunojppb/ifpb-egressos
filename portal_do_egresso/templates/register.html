@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="well">
+	<form method="post" enctype="multipart/form-data" action="" class="form-horizontal">{%csrf_token%}
+		<fieldset>
+		<legend>Cadastre-se</legend>
+		{% if error %}
+			{{error}}
+		{% endif %}
+				{% for field in form %}
+				<div class="form-group">
+				{% if field.errors %}
+					{{field.errors}}
+				{% endif %}
+					{{field.label_tag}} 
+					<div class="col-lg-10">
+					{{ field }}
+					</div>
+				</div>
+				{% endfor %}
+				<div class="form-group">
+					<div class="col-lg-10 col-lg-offset-2">
+						<input type="submit" value="Cadastrar" class="btn btn-primary">
+					</div>
+				</div>
+		</fieldset>
+	</form>
+</div>
+
+<script type="text/javascript">
+	$(function(){
+		$('form label').addClass('col-lg-2').addClass('control-label');
+	});
+</script>
+
+{% endblock content %}

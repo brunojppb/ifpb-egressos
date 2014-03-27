@@ -4,10 +4,6 @@ from django.contrib.auth.models import User
 """
 Choices
 """
-SEXO_CHOICE = (
-    ('M', 'Masculino'),
-    ('F', 'Feminino')
-)
 
 CLASSIFICACAO_CHOICE = (
     ('micro', 'Micro Empresa'),
@@ -17,11 +13,16 @@ CLASSIFICACAO_CHOICE = (
     ('rural', 'Pordutor Rural'),
     ('individual', 'Empreendedor Individual')
 )
+
+def content_file_name(instance, filename):
+    """Funcao auxiliar para gerenciar os path das imagens dos usuarios"""
+    return '/'.join(['content', instance.user.username, filename])
+
 """
 Modelos que se relacionarao com o usuario do sistema
 """
 class Aluno(models.Model):
-    user =              models.ForeignKey(User, unique=True)
+    user =              models.OneToOneField(User, unique=True, related_name='aluno')
     abreviacao =        models.CharField(max_length=20, blank=True)
     lattes =            models.URLField(max_length=100, blank=True)
     rua_av =            models.CharField(max_length=120, blank=True)
@@ -29,8 +30,8 @@ class Aluno(models.Model):
     cep =               models.CharField(max_length=10, blank=True)
     cidade =            models.CharField(max_length=80, blank=True)
     estado =            models.CharField(max_length=2, blank=True)
-    sexo =              models.CharField(max_length=2, blank=True, choices=SEXO_CHOICE)
-    foto =              models.ImageField(upload_to="fotos", blank=True)
+    sexo =              models.CharField(max_length=2, blank=True)
+    foto =              models.ImageField(upload_to=content_file_name, blank=True, null=True)
 
     def __unicode__(self):
         return '%s %s' % (self.user.first_name, self.user.last_name)
