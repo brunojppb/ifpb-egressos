@@ -1,0 +1,4 @@
+Valide seus dados no Portal do Egresso IFPB
+	{{nome}}, bem vindo ao Portal Do Egresso do IFPB.
+		click no link: {{link}} 
+		e valide seus dados em nosso portal.

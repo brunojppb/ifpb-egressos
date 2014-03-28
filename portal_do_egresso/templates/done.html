@@ -2,22 +2,35 @@
 {% load url from future %}
 
 {% block content %}
-{% if aluno %}
-	<img src="{{aluno.foto.url}}" class="img-thumbnail" style="height: 70px; width: 70px" />
-{% endif %}
-<p>Bem Vindo {{ user.first_name }} {{ user.last_name }}!</p>
 
-<p>Sua conta foi associada com a Rede Social:</p>
-<ul>
-	{% if assoc %}
-		{% for assoc in backends.associated %}
-    	<li>
-      		{{ assoc.provider }} | <a href="/logout/">logout</a>
-    	</li>
-  		{% endfor %}
-  		{% else %}
-  		<p>Voce ainda não utilizou uma rede social</p>
-	{% endif %}
-</ul>
+<div class="col-lg-3">
+	<div class="panel panel-default">
+	  <div class="panel-heading">
+			<h3 class="panel-title">Bem Vindo <strong>{{ user.first_name }} {{ user.last_name }}!</strong></h3>
+	  </div>
+	  <div class="panel-body">
+			{% if aluno.foto %}
+  				<img src="{{aluno.foto.url}}" class="img-thumbnail" style="height: 100px; width: 80px" />
+  			{% else %}
+  				{%load staticfiles%}
+  				<img src="{%static "img/avatar.png" %}" class="img-thumbnail" style="height: 100px; width: 80px" />
+			{% endif %}
+
+		{% if backends.associated %}
+		<p>Sua conta foi associada com a Rede Social:</p>
+		<ul>
+			{% for assoc in backends.associated %}
+    		<li>
+      		{{ assoc.provider }}
+    		</li>
+  			{% endfor %}
+		</ul>
+		{% endif %}
+	  </div>
+	</div>
+</div>
+<div class="col-lg-9">
+	
+</div>
 
 {% endblock content%}

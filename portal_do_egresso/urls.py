@@ -9,15 +9,14 @@ admin.autodiscover()
 urlpatterns = patterns('',
     url(r'^$', 'portal_do_egresso.ifpb.views.home'),
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^signup-email/', 'portal_do_egresso.ifpb.views.signup_email'),
-    url(r'^email-sent/', 'portal_do_egresso.ifpb.views.validation_sent'),
     url(r'^register/', 'portal_do_egresso.ifpb.views.register', name='register'),
     url(r'^login/$', 'portal_do_egresso.ifpb.views.home', name='home'),
     url(r'^logout/$', 'portal_do_egresso.ifpb.views.logout', name='logout'),
     url(r'^done/$', 'portal_do_egresso.ifpb.views.done', name='done'),
     url(r'^foto/$', 'portal_do_egresso.ifpb.views.foto', name='foto'),
-    url(r'^email/$', 'portal_do_egresso.ifpb.views.require_email', name='require_email'),
+    url(r'^complement/$', 'portal_do_egresso.ifpb.views.confirmar_dados', name='confirmar_dados'),
     url(r'', include('social.apps.django_app.urls', namespace='social')),
+    url(r'adm/', include('portal_do_egresso.administracao.urls'), name='adm'),
 )
 
 #habilita aexibicao das imagens salvas

@@ -268,7 +268,7 @@ SOCIAL_AUTH_PIPELINE = (
     #checa se o usuario ja possui cadastro no sistema
     # e associa o perfil do facebook ao usuario ja cadastrado
     'portal_do_egresso.ifpb.pipeline.associate_by_mail',
-
+    
     'social.pipeline.user.get_username',
     'portal_do_egresso.ifpb.pipeline.require_email',
     'social.pipeline.mail.mail_validation',
@@ -289,8 +289,16 @@ SOCIAL_AUTH_FACEBOOK_SECRET = 'b8bf843e9784e1ae6aebfc0f4b2293d0'
 SOCIAL_AUTH_FACEBOOK_SCOPE = ['email', 'user_education_history', 'publish_actions', 'user_about_me', 'user_birthday', 'user_work_history', 'friends_about_me', 'friends_education_history']
 
 
-
-
+"""
+Dados do Email
+login: portaldoegressoifpb@gmail.com
+senha: ifpbportal
+"""
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'portaldoegressoifpb@gmail.com'
+EMAIL_HOST_PASSWORD = 'ifpbportal'
+EMAIL_USE_TLS = True
 
 
 

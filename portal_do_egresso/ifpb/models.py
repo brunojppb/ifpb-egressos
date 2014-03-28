@@ -16,7 +16,7 @@ CLASSIFICACAO_CHOICE = (
 
 def content_file_name(instance, filename):
     """Funcao auxiliar para gerenciar os path das imagens dos usuarios"""
-    return '/'.join(['content', instance.user.username, filename])
+    return '/'.join(['profile_pictures', instance.user.username, filename])
 
 """
 Modelos que se relacionarao com o usuario do sistema

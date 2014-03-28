@@ -1,3 +1,4 @@
+import hashlib
 from django.conf import settings
 from django.contrib import auth
 from django.contrib.auth.models import User
@@ -113,19 +114,46 @@ def register(request):
         
     return render(request, 'register.html', {'form' : form})
 
-def signup_email(request):
-    return render_to_response('email_signup.html', {}, RequestContext(request))
+def confirmar_dados(request):
+    """
+    Complementa o cadastro de um aluno pre cadastrado no portal do egresso
+    """
+    #redireciona o usuario para o form de complementacao de dados
+    if request.method == 'GET':
+        q = request.GET.get('q', '')
+        if q != '':
+            print 'Hash: %s' % (q)
+            usuarios = User.objects.all()
+            for usuario in usuarios:
+                if hashlib.sha224(usuario.email).hexdigest() == q:
+                    print 'usuario localizado - nome: %s' % (usuario.first_name)
+                    form = EgressoForm(
+                        initial={'first_name': usuario.first_name,
+                            'last_name': usuario.last_name,
+                            'email': usuario.email,
+                        })
+                    
+                    return render(request, 'complement.html', {'form': form})
+        else:
+            print 'parametro inexistente'
+    #atualiza o usuario com seus novos dados
+    elif request.method == 'POST':
+        print 'POST para atualizacao dos dados'
+    return redirect('home')
 
 
-def validation_sent(request):
-    return render_to_response('validation_sent.html', {
-        'email': request.session.get('email_validation_address')
-    }, RequestContext(request))
 
 
-def require_email(request):
-    if request.method == 'POST':
-        request.session['saved_email'] = request.POST.get('email')
-        backend = request.session['partial_pipeline']['backend']
-        return redirect('social:complete', backend=backend)
-    return render_to_response('email.html', RequestContext(request))
+
+
+
+
+
+
+
+
+
+
+
+
+

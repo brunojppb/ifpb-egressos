@@ -5,6 +5,7 @@ from django.shortcuts import redirect
 from django.core.files.base import ContentFile
 from social.pipeline.partial import *
 from models import Aluno
+from forms import EgressoForm
 
 
 @partial
@@ -21,7 +22,7 @@ def require_email(strategy, details, response, user=None, is_new=False, *args, *
 @partial
 def associate_by_mail(strategy, details, user=None, is_new=False, *args, **kwargs):
     """
-    Associa um usuario ja existente a sua conta do facebook
+    Associa um usuario ja existente a sua conta da rede social
     """
     try:
         print details
@@ -51,9 +52,15 @@ def save_facebook_profile_picture(strategy, details, response, user=None, is_new
         kwargs['aluno'] = aluno
     return kwargs
 
-#@partial
-#def completar_cadastro(strategy, details, response, user=None, is_new=False, *args, **kwargs):
-#    if not user.aluno:
+@partial
+def complete_register(strategy, details, response, user=None, is_new=False, *args, **kwargs):
+    """Complementa o cadastro do usuario autenticado pelo facebook"""
+    if user is not None:
+        if user.aluno is not None:
+            for (chave, valor) in kwargs.items:
+                print '%s: %s' % (chave, valor)
+    return kwargs
+
 
 
 def dumpclean(obj):
