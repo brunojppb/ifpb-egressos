@@ -27,9 +27,11 @@ def associate_by_mail(strategy, details, user=None, is_new=False, *args, **kwarg
     try:
         print details
         email = details['email']
+        #se o usuario nao for encontrado, lanca uma exception
         kwargs['user'] = User.objects.get(email=email)
         is_new = False
     except:
+        print 'Usuario nao encontrado'
         pass
     return kwargs
 
@@ -54,14 +56,12 @@ def save_facebook_profile_picture(strategy, details, response, user=None, is_new
 
 @partial
 def complete_register(strategy, details, response, user=None, is_new=False, *args, **kwargs):
-    """Complementa o cadastro do usuario autenticado pelo facebook"""
-    if user is not None:
-        if user.aluno is not None:
-            for (chave, valor) in kwargs.items:
-                print '%s: %s' % (chave, valor)
-    return kwargs
-
-
+    """Complementa o cadastro do usuario autenticado pelo facebook se ele nao tiver um perfil associado a ele"""
+    dumpclean(backend)
+    print 'DADOS DO USUARIO:'
+    dumpclean(kwargs)
+    if is_new and strategy.backend.name == 'facebook':
+        print 'facebok'
 
 def dumpclean(obj):
     """

@@ -1,4 +1,6 @@
 import hashlib
+import urllib2
+import json
 from django.conf import settings
 from django.contrib import auth
 from django.contrib.auth.models import User
@@ -58,8 +60,28 @@ def done(request):
     scope = ' '.join(GooglePlusAuth.DEFAULT_SCOPE)
     user = request.user
     aluno = user.aluno
+    #pegando amigos do usuario
+    if user.social_auth is not None:
+        social_user = request.user.social_auth.filter(provider='facebook').first()
+        if social_user:
+            url = u'https://graph.facebook.com/{0}/friends?fields=id,name,picture&access_token={1}'.format(
+                social_user.uid,
+                social_user.extra_data['access_token']
+                )
+            print 'URL: ', url
+            req = urllib2.Request(url)
+            friends = json.loads(urllib2.urlopen(req).read()).get('data')
+            friend = []
+            for f in range(0,29):
+                friend.append(friends[f])
+            #Printa um JSON legivel para Humanos :)
+            #from pprint import pprint
+            #pprint(friends)
+
+
     return render_to_response('done.html', {
         'aluno' : aluno,
+        'friends': friend,
         'plus_id': getattr(settings, 'SOCIAL_AUTH_GOOGLE_PLUS_KEY', None),
         'plus_scope': scope
     }, RequestContext(request))

@@ -1,4 +1,5 @@
 import sys
+from os import environ
 from os.path import abspath, dirname, join
 
 
@@ -13,6 +14,10 @@ ADMINS = (
     # ('Your Name', 'your_email@example.com'),
 )
 
+ON_OPENSHIFT = False
+if environ.has_key('OPENSHIFT_REPO_DIR'):
+    ON_OPENSHIFT = True
+
 """
 Para usar outra classe na autenticacao do Django
 precisamos criar essa variavel
@@ -21,17 +26,29 @@ AUTH_PROFILE_MODULE = 'portal_do_egresso.ifpb.models.Aluno'
 
 MANAGERS = ADMINS
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'portaldoegresso', # Or path to database file if using sqlite3.
-        # The following settings are not used with sqlite3:
-        'USER': 'root',
-        'PASSWORD': 'DlnCtDko',
-        'HOST': '127.0.0.1', # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
-        'PORT': '', # Set to empty string for default.
+if ON_OPENSHIFT:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+            'NAME': os.environ['OPENSHIFT_APP_NAME'], # Or path to database file if using sqlite3.
+            'USER': os.environ['OPENSHIFT_DB_USERNAME'], # Not used with sqlite3.
+            'PASSWORD': os.environ['OPENSHIFT_DB_PASSWORD'], # Not used with sqlite3.
+            'HOST': os.environ['OPENSHIFT_DB_HOST'], # Set to empty string for localhost. Not used with sqlite3.
+            'PORT': os.environ['OPENSHIFT_DB_PORT'], # Set to empty string for default. Not used with sqlite3.
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+            'NAME': 'portaldoegresso', # Or path to database file if using sqlite3.
+            # The following settings are not used with sqlite3:
+            'USER': 'root',
+            'PASSWORD': 'DlnCtDko',
+            'HOST': '127.0.0.1', # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
+            'PORT': '', # Set to empty string for default.
+        }
+    }
 
 ALLOWED_HOSTS = []
 
@@ -266,9 +283,8 @@ SOCIAL_AUTH_PIPELINE = (
     'social.pipeline.social_auth.auth_allowed',
     'social.pipeline.social_auth.social_user',
     #checa se o usuario ja possui cadastro no sistema
-    # e associa o perfil do facebook ao usuario ja cadastrado
+    #associa o perfil do facebook ao usuario ja cadastrado
     'portal_do_egresso.ifpb.pipeline.associate_by_mail',
-    
     'social.pipeline.user.get_username',
     'portal_do_egresso.ifpb.pipeline.require_email',
     'social.pipeline.mail.mail_validation',
@@ -278,15 +294,17 @@ SOCIAL_AUTH_PIPELINE = (
     'social.pipeline.user.user_details'
 )
 
+#adicionando meus pipelines
 SOCIAL_AUTH_PIPELINE += (
     'portal_do_egresso.ifpb.pipeline.save_facebook_profile_picture',
+    #'portal_do_egresso.ifpb.pipeline.get_friends_list',
 )
 
 #FACEBOOK
 SOCIAL_AUTH_FACEBOOK_KEY = '224453197743235'
 SOCIAL_AUTH_FACEBOOK_SECRET = 'b8bf843e9784e1ae6aebfc0f4b2293d0'
 #Permissoes solicitadas ao usuario no primeiro login
-SOCIAL_AUTH_FACEBOOK_SCOPE = ['email', 'user_education_history', 'publish_actions', 'user_about_me', 'user_birthday', 'user_work_history', 'friends_about_me', 'friends_education_history']
+SOCIAL_AUTH_FACEBOOK_SCOPE = ['email', 'user_education_history', 'user_about_me', 'user_birthday', 'user_work_history', 'user_friends', 'friends_about_me', 'friends_education_history']
 
 
 """
